@@ -9,9 +9,9 @@ class Field():
         self.width = width
         self.height = height
         pyxel.init(self.width,self.height)
-        pyxel.cls(7)
-        pyxel.rect(0,15,2,2,4)
+        pyxel.cls(Environment.ground)
         self.herbi = Herbivore(10,10,Animal_Herbivore.width,Animal_Herbivore.height,Animal_Herbivore.color,Animal_Herbivore.searchRange)
+        self.weed = Weed(random.randrange(pyxel.width), random.randrange(pyxel.height),Plant_Weed.width, Plant_Weed.height, Plant_Weed.color)
         pyxel.run(self.update,self.draw)
     
     def update(self):
@@ -20,20 +20,18 @@ class Field():
         self.herbi.move(random.choice([Direction.up, Direction.down, Direction.right, Direction.left]),1)
         if self.isOut(self.herbi.posX,self.herbi.posY, Animal_Herbivore.width, Animal_Herbivore.height):
             pyxel.quit()
+        if coll.collisionDetection(self.herbi.posX,self.herbi.posY,self.herbi.width,self.herbi.height,self.weed.posX,self.weed.posY,self.weed.width,self.weed.height):
+            pyxel.quit()
         
     def draw(self):
-        pyxel.cls(7)
-        pyxel.rect(0,15,2,2,4)
+        pyxel.cls(Environment.ground)
+        self.weed.redraw()
         self.herbi.searchAround()
-        pyxel.rect(self.herbi.posX, self.herbi.posY, Animal_Herbivore.width, Animal_Herbivore.height, Animal_Herbivore.color)
+        self.herbi.redraw()
 
 
     def isOut(self,x,y,w,h):
-        if(coll.collisionDetection(x,y,w,h,-1,-1,pyxel.width + 1,1) or
-            coll.collisionDetection(x,y,w,h,-1,-1,1,pyxel.height + 1) or 
-            coll.collisionDetection(x,y,w,h,0,pyxel.height,pyxel.width,1) or
-            coll.collisionDetection(x,y,w,h,pyxel.width,0,1,pyxel.height)):
+        if(x < 0) or (y < 0) or (pyxel.width < x + w) or (pyxel.height < y + h):
             return True
         return False
-
 Field(25,25)

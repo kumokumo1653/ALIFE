@@ -14,3 +14,9 @@ class Plant_Weed():
     width = 1
     height = 1
     color = 11
+
+class Environment():
+    #white
+    ground = 7
+    #black
+    obstacle = 0
