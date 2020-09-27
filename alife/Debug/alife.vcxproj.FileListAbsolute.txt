@@ -1,0 +1,2 @@
+C:\Users\kumomomo\Studying\ashidaLab\ALIFE\alife\Debug\alife.exe
+C:\Users\kumomomo\Studying\ashidaLab\ALIFE\alife\Debug\alife.pdb
