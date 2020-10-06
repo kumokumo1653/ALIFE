@@ -4,8 +4,18 @@
 #include <vector>
 #pragma once
 #include "Random.hpp"
+#pragma once
+#include "Action.hpp"
+#pragma once
+#include "Wait.hpp"
+#include "Walk.hpp"
+#include "Initialize.hpp"
+#include "Decide.hpp"
 class Creature;
-
+class Wait;
+class Walk;
+class Initialize;
+class Decide;
 class Brain {
 	private:
 		typedef enum {
@@ -25,12 +35,7 @@ class Brain {
 		}State;
 
 
-		struct Memory memory;
 		Rand::Random rand;
-		bool init(Creature*);
-		bool go(Creature*);
-		bool wait(Creature*);
-		bool decide(Creature*);
 		
 	public:
 		Brain();
@@ -41,10 +46,9 @@ class Brain {
 			{s_init,s_stop,s_move,s_decide},
 			{s_init,s_stop,s_move,s_decide},
 		};
-		bool(Brain::*Brain::action_table[Brain::State::s_size])(Creature*) = { &Brain::init, &Brain::wait ,&Brain::go ,&Brain::decide };
+		Action* action_table[s_size] = {
+			new Initialize, new Wait, new Walk, new Decide
+		};
+
 };
 
-struct Memory {
-	int x;
-	int y;
-};

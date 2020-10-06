@@ -149,16 +149,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Brain.cpp" />
     <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="Decide.cpp" />
     <ClCompile Include="Gene.cpp" />
+    <ClCompile Include="Initialize.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Wait.cpp" />
+    <ClCompile Include="Walk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Programming\cppRandom\Random.hpp" />
+    <ClInclude Include="Action.hpp" />
     <ClInclude Include="Brain.hpp" />
     <ClInclude Include="Creature.hpp" />
+    <ClInclude Include="Decide.hpp" />
     <ClInclude Include="Gene.hpp" />
+    <ClInclude Include="Initialize.hpp" />
+    <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="Wait.hpp" />
+    <ClInclude Include="Walk.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
