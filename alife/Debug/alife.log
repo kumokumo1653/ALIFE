@@ -1,6 +1,0 @@
-﻿  Creature.cpp
-  Main.cpp
-C:\Users\kumomomo\Studying\ashidaLab\ALIFE\alife\Main.cpp(24,34): warning C4244: '引数': 'double' から 'int' への変換です。データが失われる可能性があります。
-C:\Users\kumomomo\Studying\ashidaLab\ALIFE\alife\Main.cpp(24,22): warning C4244: '引数': 'double' から 'int' への変換です。データが失われる可能性があります。
-  コードを生成中...
-  alife.vcxproj -> C:\Users\kumomomo\Studying\ashidaLab\ALIFE\alife\Debug\alife.exe
