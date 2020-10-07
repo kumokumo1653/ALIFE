@@ -1,8 +1,6 @@
 #pragma once
 #include "Creature.hpp"
 #pragma once
-#include <vector>
-#pragma once
 #include "Random.hpp"
 #pragma once
 #include "Action.hpp"
