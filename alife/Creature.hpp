@@ -1,6 +1,5 @@
 #pragma once
 #include "Brain.hpp"
-#pragma once
 #include "Memory.hpp"
 class Brain;
 class Memory;

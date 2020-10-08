@@ -1,10 +1,7 @@
 #pragma once
 #include "Creature.hpp"
-#pragma once
 #include "Random.hpp"
-#pragma once
 #include "Action.hpp"
-#pragma once
 #include "Wait.hpp"
 #include "Walk.hpp"
 #include "Initialize.hpp"
