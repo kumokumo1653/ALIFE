@@ -9,7 +9,11 @@ namespace Rand {
 	public:
 		Random();
 		int RandInt(int min, int max);
+		int RandInt(int max);
+		double RandDouble(double min, double max);
+		double RandDouble(double max);
 		bool RandBool(double rate);
+		bool RandBool();
 		int RandDiscrete(std::vector<double> rateSequence);
 	};
 }

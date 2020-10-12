@@ -1,6 +1,5 @@
 #pragma once
 #include "Creature.hpp"
-#include "Random.hpp"
 #include "Action.hpp"
 #include "Wait.hpp"
 #include "Walk.hpp"
@@ -30,7 +29,6 @@ class Brain {
 		}State;
 
 
-		Rand::Random rand;
 		
 	public:
 		Brain();
@@ -41,9 +39,7 @@ class Brain {
 			{s_init,s_stop,s_move,s_decide},
 			{s_init,s_stop,s_move,s_decide},
 		};
-		Action* action_table[s_size] = {
-			new Initialize, new Wait, new Walk, new Decide
-		};
+		Action* action_table[s_size];
 
 };
 

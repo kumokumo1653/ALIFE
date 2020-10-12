@@ -5,7 +5,7 @@ class Brain;
 class Memory;
 class Creature {
 	private:
-		Brain *brain;
+		Brain* brain;
 	public:
 		Creature(int HP, int size, double x, double y, double r);
 		int HP;
@@ -14,5 +14,5 @@ class Creature {
 		double y;
 		double r;//ˆÚ“®—Ê
 		void behavior();
-		Memory* memory = new Memory;
+		Memory* memory;
 };

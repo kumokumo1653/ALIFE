@@ -1,6 +1,5 @@
 #pragma once 
 #include "Action.hpp"
-#pragma once 
 #include "Creature.hpp"
 class Action;
 class Creature;

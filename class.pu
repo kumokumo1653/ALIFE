@@ -1,0 +1,70 @@
+@startuml
+left to right direction
+
+class Main{
+    drawDX
+}
+class Creature{
+    - Brain* brain
+    + int HP
+    + int size
+    + double x
+    + double y
+    + double r
+    --
+    + Creature(int HP, int size, double x, double y, double r)
+    + void behavior()
+    + Memory* memory
+}
+class Brain{
+    - enum Conditions
+    - enum State
+    + Brain()
+    + int state
+    + int Condition
+    + int state_table[][]
+    + Action* action_table[]
+}
+class Memory{
+
+}
+class Gene{
+
+}
+
+class Action{
+    +{abstract} int action(Creature* creature)
+}
+class Decide{
+
+}
+class Wait{
+
+}
+class Walk{
+
+}
+class Initialize{
+
+}
+class Random{
+    - random_device rand
+    - mt19937 mt
+    + Random()
+    + int RandInt()
+    + double RnadDouble()
+    + bool RandBool()
+    + int RandDiscrete()
+}
+Action <|.. Wait
+Action <|.. Walk
+Action <|.. Decide
+Action <|.. Initialize
+Action *-- Random
+Creature *-- Brain
+Creature *-- Memory
+Creature *-- Gene
+Brain o-- Action
+Creature -- Action
+Main *-- Creature
+@enduml

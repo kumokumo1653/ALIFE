@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include "Creature.hpp"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
@@ -15,14 +16,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	int x = 300;
 	int y = 200;
-	//Creature creature(10, 30, x, y,1);
+	Creature creature(10, 30, x, y,1);
 	while( ProcessMessage()==0 ) {
 		ClearDrawScreen();//裏画面消す
         
-		DrawCircle(x, y, GetColor(0, 255, 0), 1);
-		//DrawCircle(creature.x, creature.y, creature.size, GetColor(0, 255, 0), 1);
+		DrawCircle(creature.x, creature.y, creature.size, GetColor(0, 255, 0), 1);
 		ScreenFlip();//裏画面を表画面にコピー
-		//creature.behavior();
+		creature.behavior();
 
 		if(CheckHitKey(KEY_INPUT_Q))
 			DxLib_End();				// ＤＸライブラリ使用の終了処理
