@@ -1,13 +1,14 @@
 #include "Creature.hpp"
 
 Creature::Creature(int HP, int size, double x, double y, double r):
-HP(HP), size(size), x(x), y(y), r(r){}
+HP(HP), size(size), x(x), y(y), r(r), brain(new Brain), memory(new Memory){}
 
 void Creature::behavior() {
 	//“®ìÀs
 	int result = brain->action_table[brain->state]->action(this);
 	
+	
 		
 	//ó‘Ô‘JˆÚ
-	brain->state = brain->state_table[brain->state][brain->condition];
+	brain->state = brain->state_table[brain->state][result];
 }

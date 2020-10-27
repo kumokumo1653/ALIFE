@@ -13,10 +13,10 @@ class Decide;
 class Brain {
 	private:
 		typedef enum {
-			flag_null,
-			flag_stop,
-			flag_move,
-			flag_decide,
+			error,
+			completion,
+			processing,
+			null,
 			c_size,
 		}Conditions;
 		
@@ -35,9 +35,10 @@ class Brain {
 		int state;
 		int condition;
 		int state_table[s_size][c_size] = {
-			{s_stop,s_stop,s_move,s_decide},
-			{s_init,s_stop,s_move,s_decide},
-			{s_init,s_stop,s_move,s_decide},
+			{s_init,s_decide,s_init,s_init},
+			{s_init,s_decide,s_stop,s_init},
+			{s_init,s_stop,s_move,s_init},
+			{s_init,s_move,s_decide,s_init},
 		};
 		Action* action_table[s_size];
 
