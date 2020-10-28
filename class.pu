@@ -1,9 +1,10 @@
 @startuml
 left to right direction
-
+skinparam classAttributeIconSize 0
 class Main{
     drawDX
 }
+note top: スタートアップ関数
 class Creature{
     - Brain* brain
     + int HP
@@ -25,28 +26,36 @@ class Brain{
     + int state_table[][]
     + Action* action_table[]
 }
+note right: 状態遷移の制御
 class Memory{
-
+    + int x
+    + int y
 }
+note right: 記憶領域
 class Gene{
 
 }
+note right: 遺伝子情報
 
 class Action{
     +{abstract} int action(Creature* creature)
 }
 class Decide{
-
+    + int action(Creature* creature)
 }
+note right: 次の移動先の決定
 class Wait{
-
+    + int action(Creature* creature)
 }
+note right: 何もしない
 class Walk{
-
+    + int action(Creature* creature)
 }
+note right: 1fごとに移動し座標を更新
 class Initialize{
-
+    + int action(Creature* creature)
 }
+note right: 初期化行動
 class Random{
     - random_device rand
     - mt19937 mt
