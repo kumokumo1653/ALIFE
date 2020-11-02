@@ -1,6 +1,7 @@
 #pragma once
 #include "Random.hpp"
 #include <cmath>
+#include <iostream>
 class Creature;
 class Action {
 public:
