@@ -13,15 +13,14 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 
 	SetDrawScreen( DX_SCREEN_BACK ) ;//描画先を裏画面に
-
-	int x = 300;
-	int y = 200;
-	Creature creature(10, 30, x, y,1.0);
+	VECTOR_D init = VGetD(200, 300, 0);
+	Creature creature(10, 30, init,1.0);
 	while( ProcessMessage()==0 ) {
 		ClearDrawScreen();//裏画面消す
         
 		creature.behavior();
-		DrawCircle(creature.x, creature.y, creature.size, GetColor(0, 255, 0), 1);
+		DrawCircle(creature.vector.x, creature.vector.y, creature.size, GetColor(0, 255, 0), 1);
+		DrawCircle(creature.memory->destination.location.x, creature.memory->destination.location.y, creature.memory->destination.range, GetColor(255, 0, 0), 1);
 		ScreenFlip();//裏画面を表画面にコピー
 
 		if(CheckHitKey(KEY_INPUT_Q))

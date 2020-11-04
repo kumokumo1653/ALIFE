@@ -1,5 +1,7 @@
+#pragma once
+#include <DxLib.h>
+#include "Location.hpp"
 class Memory {
 	public:
-		int x;
-		int y;
+		Location destination;
 };

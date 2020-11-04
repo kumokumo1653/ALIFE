@@ -2,6 +2,7 @@
 #include "Random.hpp"
 #include <cmath>
 #include <iostream>
+#include "Location.hpp"
 class Creature;
 class Action {
 public:

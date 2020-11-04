@@ -3,14 +3,14 @@
 
 int Walk::action(Creature* creature) {
 
-	int x = creature->memory->x;
-	int y = creature->memory->y;
-	if (x < 0 || y < 0) return 0;
-	if ((int(creature->x) == x && int(creature->y) == y) || int(ceil(creature->x)) == x && int(ceil(creature->y) == y) || int(round(creature->x) == x) && int(round(creature->y) == y)) {
+	double range = creature->memory->destination.range;
+	if (range < 0) return 0;
+	double distance = VSizeD(VSubD(creature->vector, creature->memory->destination.location));
+	if(distance <= range + creature->size){
 		return 1;
 	}
-	double theta = atan2(y - creature->y, x - creature->x);
-	creature->x += creature->r * cos(theta);
-	creature->y += creature->r * sin(theta);
+	double theta = atan2(creature->memory->destination.location.y - creature->vector.y, creature->memory->destination.location.x - creature->vector.x);
+	creature->vector.x += creature->r * cos(theta);
+	creature->vector.y += creature->r * sin(theta);
 	return 2;
 }

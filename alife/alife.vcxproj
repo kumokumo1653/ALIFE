@@ -167,6 +167,7 @@
     <ClInclude Include="Decide.hpp" />
     <ClInclude Include="Gene.hpp" />
     <ClInclude Include="Initialize.hpp" />
+    <ClInclude Include="Location.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="Random.hpp" />
     <ClInclude Include="Wait.hpp" />

@@ -1,7 +1,7 @@
 #include "Creature.hpp"
 
-Creature::Creature(int HP, int size, double x, double y, double r):
-HP(HP), size(size), x(x), y(y), r(r), brain(new Brain), memory(new Memory){}
+Creature::Creature(int HP, int size, VECTOR_D vector, double r):
+HP(HP), size(size), vector(vector), r(r), brain(new Brain), memory(new Memory){}
 
 void Creature::behavior() {
 	//ìÆçÏé¿çs
