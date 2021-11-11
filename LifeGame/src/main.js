@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
 import './style.scss';
-import {mousewheelPlugin} from './mousewheelPlugin';
-mousewheelPlugin(app);
+import MousewheelPlugin from './MousewheelPlugin';
 const app = new PIXI.Application({
     width: $(window).innerWidth(),
     height: $(window).innerHeight(),
@@ -9,6 +8,7 @@ const app = new PIXI.Application({
     antialias: true,
     
 });
+const mousewheelPlugin = new MousewheelPlugin(app);
 app.stage.hitArea = app.screen;
 app.stage.interactive = true;
 
@@ -39,7 +39,7 @@ app.stage.mouseleave = () =>{
     prePos = null;
     dragFlag = false;
 };
-app.stage.mousemove = (e) =>{
+app.stage.on('mousemove', (e) =>{
     if(dragFlag){
         app.stage.x += (e.data.global.x - prePos.x);
         app.stage.y += (e.data.global.y - prePos.y);
@@ -47,7 +47,7 @@ app.stage.mousemove = (e) =>{
         app.stage.hitArea = new PIXI.Rectangle(-app.stage.x, -app.stage.y, app.screen.width, app.screen.height);
     }
 
-};
+});
 
 //zoom
 let wheelState = 0;
@@ -55,8 +55,7 @@ let zoomStandard = 1;
 const maxZoom = 3;
 const minZoom = 0.2;
 const zoomSensitivity = 0.1;
-app.stage.on('mousewheel', (delta, e) =>{
-    console.log(e);
+app.stage.on('wheel', (e) =>{
     wheelState += e.deltaY < 0 ? 1 : -1;
     wheelState = wheelState > Math.round((maxZoom - zoomStandard) / zoomSensitivity) ? Math.round((maxZoom - zoomStandard) / zoomSensitivity) : 
                 wheelState < -Math.round((zoomStandard - minZoom) / zoomSensitivity) ? -Math.round((zoomStandard - minZoom) / zoomSensitivity) : wheelState;
