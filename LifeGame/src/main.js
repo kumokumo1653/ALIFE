@@ -45,8 +45,16 @@ app.stage.on('mouseout', () =>{
 });
 app.stage.on('mousemove', (e) =>{
     if(dragFlag){
+        const currentPos = {x: lifegameContainer.x, y: lifegameContainer.y};
         lifegameContainer.x += (e.data.global.x - prePos.x);
         lifegameContainer.y += (e.data.global.y - prePos.y);
+        if(lifegameContainer.x > app.screen.width / 2 || lifegameContainer.y > app.screen.height / 2 ||
+            lifegameContainer.x + drawer.width < app.screen.width / 2 || lifegameContainer.y + drawer.height < app.screen.height / 2                                                                                             
+        ){
+            lifegameContainer.x = currentPos.x;
+            lifegameContainer.y = currentPos.y;
+            
+        }
         prePos = {x: e.data.global.x, y: e.data.global.y};
     }
 
