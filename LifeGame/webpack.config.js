@@ -10,6 +10,7 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
     },
     mode: 'production',
+    devtool: "eval-source-map",
     devServer:{
         client: {
             overlay: true,

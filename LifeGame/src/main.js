@@ -1,6 +1,9 @@
 import * as PIXI from 'pixi.js';
 import './style.scss';
-import MousewheelPlugin from './MousewheelPlugin';
+import {activateMouseWheel} from './MousewheelPlugin';
+import lifegame_drawer from './LifeGame/Drawer';
+
+
 const app = new PIXI.Application({
     width: $(window).innerWidth(),
     height: $(window).innerHeight(),
@@ -8,43 +11,43 @@ const app = new PIXI.Application({
     antialias: true,
     
 });
-const mousewheelPlugin = new MousewheelPlugin(app);
+activateMouseWheel(app);
 app.stage.hitArea = app.screen;
 app.stage.interactive = true;
 
+const lifegameContainer = new PIXI.Container();
+const lifegameTicker = new PIXI.Ticker();
+app.stage.addChild(lifegameContainer);
 
-const line = new PIXI.Graphics();
-for(let i = 0; i < 10000;i += 50){
-    line.lineStyle(2,0x999999).moveTo(i, 0).lineTo(i, 10000);
-    line.lineStyle(2,0x999999).moveTo(0, i).lineTo(10000, i);
-}
-app.stage.addChild(line);
+const drawer = new lifegame_drawer(10, 50, lifegameContainer, lifegameTicker);
+//transport container center
+console.log(lifegameContainer.width);
+lifegameContainer.x = app.screen.width / 2 - drawer.width / 2;
+lifegameContainer.y = app.screen.height / 2 - drawer.height / 2;
 
-//pan
+drawer.setup([{x: 3,y: 3}, {x: 3,y: 4}, {x: 3, y: 5}]);
+drawer.start(1);
+//drag
 let prePos;
 let dragFlag = false;
 
-app.stage.mousedown = (e) =>{
-    console.log('down');
+app.stage.on('mousedown', (e) =>{
     prePos = {x: e.data.global.x, y: e.data.global.y};
     dragFlag = true;
-};
-app.stage.mouseup = () =>{
-    console.log('up');
+});
+app.stage.on('mouseup', () =>{
     prePos = null;
     dragFlag = false;
-};
-app.stage.mouseleave = () =>{
-    console.log('leave');
+});
+app.stage.on('mouseout', () =>{
     prePos = null;
     dragFlag = false;
-};
+});
 app.stage.on('mousemove', (e) =>{
     if(dragFlag){
-        app.stage.x += (e.data.global.x - prePos.x);
-        app.stage.y += (e.data.global.y - prePos.y);
+        lifegameContainer.x += (e.data.global.x - prePos.x);
+        lifegameContainer.y += (e.data.global.y - prePos.y);
         prePos = {x: e.data.global.x, y: e.data.global.y};
-        app.stage.hitArea = new PIXI.Rectangle(-app.stage.x, -app.stage.y, app.screen.width, app.screen.height);
     }
 
 });
@@ -59,15 +62,25 @@ app.stage.on('wheel', (e) =>{
     wheelState += e.deltaY < 0 ? 1 : -1;
     wheelState = wheelState > Math.round((maxZoom - zoomStandard) / zoomSensitivity) ? Math.round((maxZoom - zoomStandard) / zoomSensitivity) : 
                 wheelState < -Math.round((zoomStandard - minZoom) / zoomSensitivity) ? -Math.round((zoomStandard - minZoom) / zoomSensitivity) : wheelState;
+
+    const mousePosOnContainer = {   x: (e.clientX - lifegameContainer.x) / lifegameContainer.scale.x,
+                                    y: (e.clientY - lifegameContainer.y) / lifegameContainer.scale.y
+                                };
+    
     if(wheelState == 0){
-        app.stage.scale.x = 1;
-        app.stage.scale.y = 1;
+        lifegameContainer.scale.x = 1;
+        lifegameContainer.scale.y = 1;
     }else{
         const rate = zoomStandard + wheelState * zoomSensitivity;
-        app.stage.scale.x = rate;
-        app.stage.scale.y = rate;
-        console.log(rate);
+        lifegameContainer.scale.x = rate;
+        lifegameContainer.scale.y = rate;
     }
+    const newMousePosOnScreen = {   x: mousePosOnContainer.x * lifegameContainer.scale.x + lifegameContainer.x, 
+                                    y: mousePosOnContainer.y * lifegameContainer.scale.y + lifegameContainer.y
+                                };
+    lifegameContainer.x -= newMousePosOnScreen.x - e.clientX;
+    lifegameContainer.y -= newMousePosOnScreen.y - e.clientY;
+
 });
 
 

@@ -2,7 +2,6 @@
 class MousewheelPlugin{
 	constructor(app){
 		this.app = app;
-        console.log(this.app.stage);
 		this.eventHandler = (e) =>{this.onMouseWheel(e);};
 		this.app.view.addEventListener('wheel',this.eventHandler, {passive: false});
 	}
@@ -27,4 +26,6 @@ class MousewheelPlugin{
 	}
 	
 }
-export default MousewheelPlugin;
+export function activateMouseWheel(app){
+	new MousewheelPlugin(app);
+};
