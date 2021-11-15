@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import './style.scss';
 import {activateMouseWheel} from './MousewheelPlugin';
 import lifegame_drawer from './LifeGame/Drawer';
+import * as Header from './UI/Header';
 
 
 const app = new PIXI.Application({
@@ -19,9 +20,11 @@ const lifegameContainer = new PIXI.Container();
 const lifegameTicker = new PIXI.Ticker();
 app.stage.addChild(lifegameContainer);
 
+//header
+Header.setup(app, 50, 0xffffff);
+
 const drawer = new lifegame_drawer(10, 50, lifegameContainer, lifegameTicker);
 //transport container center
-console.log(lifegameContainer.width);
 lifegameContainer.x = app.screen.width / 2 - drawer.width / 2;
 lifegameContainer.y = app.screen.height / 2 - drawer.height / 2;
 
