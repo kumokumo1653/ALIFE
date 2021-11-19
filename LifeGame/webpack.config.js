@@ -17,6 +17,7 @@ module.exports = {
             overlay: true,
         }
     },
+    cache: false,
     module: {
         rules: [
             {

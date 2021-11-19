@@ -34,6 +34,10 @@ class Drawer{
         this.ticker.start();
     }
 
+    stop(){
+        this.ticker.stop();
+    }
+
     update(){
         this.ticker.update();
     }

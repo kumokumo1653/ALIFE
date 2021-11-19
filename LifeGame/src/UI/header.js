@@ -1,15 +1,43 @@
 import * as PIXI from 'pixi.js';
-import {Button, IconButton} from './Button';
+import {IconButton} from './Button';
 
-const headerContainer = new PIXI.Container();
-const setup = (app, height, backgroundColor) =>{
-    headerContainer.addChild(new PIXI.Graphics().beginFill(backgroundColor, 0.6)
-                                .drawRect(0, 0, app.screen.width, height)
-                                .endFill());
-    app.stage.addChild(headerContainer);
-    const playIcon = PIXI.Sprite.from('Assets/UI/play.png');
-    const playButton = new IconButton(128, 128, 0x00ff00, playIcon);
-    headerContainer.addChild(playButton.container);
-};
+class Header{
+    constructor(width, height, color, alpha){
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.alpha = alpha;
+        this._container = new PIXI.Container();
+        this.frame = new PIXI.Graphics().beginFill(this.color, this.alpha)
+        .drawRect(0, 0, this.width, this.height)
+        .endFill();
 
-export {setup, headerContainer as container};
+        this._container.addChild(this.frame);
+    }
+
+    setup(drawer){
+        this.drawer = drawer;
+        const texture = PIXI.Texture.from('Assets/UI/play.png');
+        const sprite = new PIXI.Sprite(texture);
+        this.playButton = new IconButton(100, 100, 0xff0000, sprite);
+        this._container.addChild(this.playButton.container);
+        this.playButton.down(()=>{
+            drawer.start(1);
+        });
+
+        this.stopButton = new IconButton(100, 100, 0xff0000, PIXI.Sprite.from('Assets/UI/stop.png'));
+        this.stopButton.x = 100;
+        this._container.addChild(this.stopButton.container);
+        this.stopButton.down(()=>{
+            console.log("header");
+            drawer.stop();
+        });
+    }
+
+    
+    get container(){
+        return this._container;
+    }
+}
+
+export {Header};

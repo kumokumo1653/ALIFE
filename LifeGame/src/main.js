@@ -2,8 +2,7 @@ import * as PIXI from 'pixi.js';
 import './style.scss';
 import {activateMouseWheel} from './MousewheelPlugin';
 import lifegame_drawer from './LifeGame/Drawer';
-import * as Header from './UI/Header';
-
+import { Header } from './UI/header';
 
 const app = new PIXI.Application({
     width: $(window).innerWidth(),
@@ -20,8 +19,6 @@ const lifegameContainer = new PIXI.Container();
 const lifegameTicker = new PIXI.Ticker();
 app.stage.addChild(lifegameContainer);
 
-//header
-Header.setup(app, 50, 0xffffff);
 
 const drawer = new lifegame_drawer(10, 50, lifegameContainer, lifegameTicker);
 //transport container center
@@ -30,29 +27,44 @@ lifegameContainer.y = app.screen.height / 2 - drawer.height / 2;
 
 drawer.setup([{x: 3,y: 3}, {x: 3,y: 4}, {x: 3, y: 5}]);
 drawer.start(1);
+
+const display = new PIXI.Graphics();
+display.interactive = true;
+display.hitArea = new PIXI.Rectangle(0,0,screen.width, screen.height);
+app.stage.addChild(display);
+
+//header
+const header = new Header(app.screen.width, 200, 0xffffff, 0.6);
+header.setup(drawer);
+app.stage.addChild(header.container);
+
+const line = new PIXI.Graphics();
+line.lineStyle(2, 0xff0000).moveTo(0, app.screen.height / lifegameContainer.scale.y / 2).lineTo(app.screen.width, app.screen.height / lifegameContainer.scale.y / 2);
+line.lineStyle(2, 0xff0000).moveTo(app.screen.width / lifegameContainer.scale.x / 2, 0).lineTo(app.screen.width / lifegameContainer.scale.x / 2, app.screen.height);
+app.stage.addChild(line);
 //drag
 let prePos;
 let dragFlag = false;
 
-app.stage.on('mousedown', (e) =>{
+display.on('mousedown', (e) =>{
     prePos = {x: e.data.global.x, y: e.data.global.y};
     dragFlag = true;
 });
-app.stage.on('mouseup', () =>{
+display.on('mouseup', () =>{
     prePos = null;
     dragFlag = false;
 });
-app.stage.on('mouseout', () =>{
+display.on('mouseout', () =>{
     prePos = null;
     dragFlag = false;
 });
-app.stage.on('mousemove', (e) =>{
+display.on('mousemove', (e) =>{
     if(dragFlag){
         const currentPos = {x: lifegameContainer.x, y: lifegameContainer.y};
         lifegameContainer.x += (e.data.global.x - prePos.x);
         lifegameContainer.y += (e.data.global.y - prePos.y);
-        if(lifegameContainer.x > app.screen.width / 2 || lifegameContainer.y > app.screen.height / 2 ||
-            lifegameContainer.x + drawer.width < app.screen.width / 2 || lifegameContainer.y + drawer.height < app.screen.height / 2                                                                                             
+        if(lifegameContainer.x  > app.screen.width  / 2 || lifegameContainer.y  > app.screen.height  / 2 ||
+            lifegameContainer.x + drawer.width * lifegameContainer.scale.x  < app.screen.width /  2 || lifegameContainer.y + drawer.height * lifegameContainer.scale.y < app.screen.height /  2                                                                                             
         ){
             lifegameContainer.x = currentPos.x;
             lifegameContainer.y = currentPos.y;
@@ -69,7 +81,8 @@ let zoomStandard = 1;
 const maxZoom = 3;
 const minZoom = 0.2;
 const zoomSensitivity = 0.1;
-app.stage.on('wheel', (e) =>{
+display.on('wheel', (e) =>{
+    const currentPos = {x: lifegameContainer.x, y: lifegameContainer.y};
     wheelState += e.deltaY < 0 ? 1 : -1;
     wheelState = wheelState > Math.round((maxZoom - zoomStandard) / zoomSensitivity) ? Math.round((maxZoom - zoomStandard) / zoomSensitivity) : 
                 wheelState < -Math.round((zoomStandard - minZoom) / zoomSensitivity) ? -Math.round((zoomStandard - minZoom) / zoomSensitivity) : wheelState;
@@ -92,6 +105,13 @@ app.stage.on('wheel', (e) =>{
     lifegameContainer.x -= newMousePosOnScreen.x - e.clientX;
     lifegameContainer.y -= newMousePosOnScreen.y - e.clientY;
 
+    if(lifegameContainer.x  > app.screen.width  / 2 || lifegameContainer.y  > app.screen.height  / 2 ||
+        lifegameContainer.x + drawer.width * lifegameContainer.scale.x  < app.screen.width /  2 || lifegameContainer.y + drawer.height * lifegameContainer.scale.y < app.screen.height /  2                                                                                             
+    ){
+        lifegameContainer.x = currentPos.x;
+        lifegameContainer.y = currentPos.y;
+            
+    }
 });
 
 
