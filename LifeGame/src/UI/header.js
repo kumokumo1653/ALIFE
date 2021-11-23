@@ -17,6 +17,8 @@ class Header{
 
     setup(drawer){
         this.drawer = drawer;
+
+        //playButton
         const texture = PIXI.Texture.from('Assets/UI/play.png');
         const sprite = new PIXI.Sprite(texture);
         this.playButton = new IconButton(100, 100, 0xff0000, sprite);
@@ -25,12 +27,21 @@ class Header{
             drawer.start(1);
         });
 
+        //stopButton
         this.stopButton = new IconButton(100, 100, 0xff0000, PIXI.Sprite.from('Assets/UI/stop.png'));
         this.stopButton.x = 100;
         this._container.addChild(this.stopButton.container);
         this.stopButton.down(()=>{
-            console.log("header");
             drawer.stop();
+        });
+
+        //edhitButton
+        this.editButton = new IconButton(100, 100, 0xff0000, PIXI.Sprite.from('Assets/UI/edit.png'));
+        this.editButton.x = 500;
+        this._container.addChild(this.editButton.container);
+        this.editButton.down(()=>{
+            this.drawer.isEdit = !this.drawer.isEdit;
+            this.editButton.color = this.drawer.isEdit ? 0x00ff00 : 0xff0000;
         });
     }
 

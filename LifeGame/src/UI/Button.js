@@ -63,12 +63,22 @@ class IconButton extends Button{
         this.mask = mask;
         this.mask.width = width;
         this.mask.height = height;
-        this.color = color;
+        this._color = color;
         this.alpha = alpha;
-        this._graphics.beginFill(this.color, this.alpha).drawRect(this.x, this.y, this.width, this.height).endFill();
+        this._graphics.beginFill(this._color, this.alpha).drawRect(this._x, this._y, this._width, this._height).endFill();
         this._graphics.mask = this.mask;
         this._container.addChild(this.mask);
     }
+    get color(){
+        return this._color;
+    }
+
+    set color(val){
+        this._color = val;
+        this._graphics.clear();
+        this._graphics.beginFill(val, this.alpha).drawRect(0, 0, this._width, this._height).endFill();
+    }
+
 }   
 
 
