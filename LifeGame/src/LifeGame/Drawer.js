@@ -7,10 +7,9 @@ class Drawer{
     lineWeight = 2;
     fps;
     #elapsedsecond = 0;
-    isInitialized = false;
     isStarted = false;
     isEdit = false;
-
+    #initIndividuals = [];
     //drag
     prePos;
     dragFlag = false;
@@ -43,7 +42,52 @@ class Drawer{
         this.display.on('mouseup', ()=>up());
         this.display.on('mouseout', ()=>out());
         this.display.on('mousemove', (e)=>{move(e)});
-        this.display.on('wheel', (e) =>{
+        this.display.on('wheel', (e) => wheel(e));
+
+        /*-------- callback function ----------*/
+        const down = ((e) => {
+            this.dragFlag = true;
+            this.prePos = {x: e.data.global.x, y: e.data.global.y};
+            if(this.isEdit){
+                const cellPos = {x: Math.floor((e.data.global.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((e.data.global.y - this.container.y) / this.container.scale.y / this.bsize)};
+                this.#updateInitIndividuals(cellPos);
+            }
+        }).bind(this);
+
+        const up = (() => {
+            this.dragFlag = false;
+            this.prePos = null;
+        }).bind(this);
+
+        const out = (()=>{
+            this.dragFlag = false;
+            this.prePos = null;
+        }).bind(this);
+
+        const move = ((e) => {
+            if(this.dragFlag){
+                if(this.isEdit){
+                    const preCellPos = {x: Math.floor((this.prePos.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((this.prePos.y - this.container.y) / this.container.scale.y / this.bsize)};
+                    const cellPos = {x: Math.floor((e.data.global.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((e.data.global.y - this.container.y) / this.container.scale.y / this.bsize)};
+                    if(preCellPos.x != cellPos.x || preCellPos.y != cellPos.y){
+                        this.#updateInitIndividuals(cellPos);
+                    }
+                }else{
+                    const currentPos = {x: this.container.x, y: this.container.y};
+                    this.container.x += (e.data.global.x - this.prePos.x);
+                    this.container.y += (e.data.global.y - this.prePos.y);
+                    if(this.container.x  > this.display.hitArea.width  / 2 || this.container.y  > this.display.hitArea.height  / 2 ||
+                        this.container.x + this.width * this.container.scale.x  < this.display.hitArea.width /  2 || this.container.y + this.height * this.container.scale.y < this.display.hitArea.height /  2                                                                                             
+                    ){
+                        this.container.x = currentPos.x;
+                        this.container.y = currentPos.y;
+                    }
+                }
+                this.prePos = {x: e.data.global.x, y: e.data.global.y};
+            }
+        }).bind(this);
+
+        const wheel = ((e) =>{
             const currentPos = {x: this.container.x, y: this.container.y};
             this.wheelState += e.deltaY < 0 ? 1 : -1;
             this.wheelState = this.wheelState > Math.round((this.maxZoom - this.zoomStandard) / this.zoomSensitivity) ? Math.round((this.maxZoom - this.zoomStandard) / this.zoomSensitivity) : 
@@ -78,54 +122,24 @@ class Drawer{
             }else if(this.container.y + this.height * this.container.scale.y < this.display.hitArea.height /  2){
                 this.container.y = this.display.hitArea.height / 2 - this.height * this.container.scale.y;
             }
-        });
-
-        /*-------- callback function ----------*/
-        const down = ((e) => {
-            this.dragFlag = true;
-            if(!this.isEdit){
-                this.prePos = {x: e.data.global.x, y: e.data.global.y};
-            }else{
-                const cellPos = {x: (e.data.global.x - this.container.x) / this.container.scale.x / this.bsize, y: (e.data.global.y - this.container.y) / this.container.scale.y / this.bsize};
-                console.log(cellPos.x + "," + cellPos.y);
-
-            }
-        }).bind(this);
-
-        const up = (() => {
-            this.dragFlag = false;
-            if(!this.isEdit){
-                this.prePos = null;
-            }
-        }).bind(this);
-
-        const out = (()=>{
-            this.dragFlag = false;
-            if(!this.isEdit){
-                this.prePos = null;
-            }
-        }).bind(this);
-
-        const move = ((e) => {
-            if(!this.isEdit){
-                if(this.dragFlag){
-                    const currentPos = {x: this.container.x, y: this.container.y};
-                    this.container.x += (e.data.global.x - this.prePos.x);
-                    this.container.y += (e.data.global.y - this.prePos.y);
-                    if(this.container.x  > this.display.hitArea.width  / 2 || this.container.y  > this.display.hitArea.height  / 2 ||
-                        this.container.x + this.width * this.container.scale.x  < this.display.hitArea.width /  2 || this.container.y + this.height * this.container.scale.y < this.display.hitArea.height /  2                                                                                             
-                    ){
-                        this.container.x = currentPos.x;
-                        this.container.y = currentPos.y;
-                    }
-                    this.prePos = {x: e.data.global.x, y: e.data.global.y};
-                }
-            }
         }).bind(this);
     }
 
-    setup(initIndividuals){
-        this.#controller.setup(initIndividuals);
+    #updateInitIndividuals(cellPos){
+        const index = this.#initIndividuals.findIndex((el) => el.x == cellPos.x && el.y == cellPos.y);
+        if( index === -1){
+            this.#initIndividuals.push(cellPos);
+        }else{
+            this.#initIndividuals.splice(index, 1);
+        }                        
+        this.drawField();
+    }
+    setup(...args){
+        if(args.length == 0){
+            this.#controller.setup(this.#initIndividuals);
+        } else if(args.length == 1){
+            this.#controller.setup(args[0]);
+        }
         this.ticker.add(() =>{
             this.#elapsedsecond += (this.ticker.elapsedMS / 1000);
             if(1 / this.fps < this.#elapsedsecond){
@@ -157,13 +171,21 @@ class Drawer{
             line.lineStyle(this.lineWeight, this.lineColor).moveTo(0, i * this.bsize).lineTo(this.size * this.bsize, i * this.bsize);
         }
         this.container.addChild(line);
-        
-        this.#controller.individuals.forEach(el =>{
-            const rect = new PIXI.Graphics().beginFill(this.boxColor)
-                                .drawRect(el.x * this.bsize + this.lineWeight / 2 , el.y * this.bsize + this.lineWeight / 2 , this.bsize - this.lineWeight , this.bsize - this.lineWeight                                                                                                                                                                               )
-                                .endFill();
-            this.container.addChild(rect);
-        });
+        if(this.isStarted){
+            this.#controller.individuals.forEach(el =>{
+                const rect = new PIXI.Graphics().beginFill(this.boxColor)
+                                    .drawRect(el.x * this.bsize + this.lineWeight / 2 , el.y * this.bsize + this.lineWeight / 2 , this.bsize - this.lineWeight , this.bsize - this.lineWeight                                                                                                                                                                               )
+                                    .endFill();
+                this.container.addChild(rect);
+            });
+        }else{
+            this.#initIndividuals.forEach(el =>{
+                const rect = new PIXI.Graphics().beginFill(this.boxColor)
+                                    .drawRect(el.x * this.bsize + this.lineWeight / 2 , el.y * this.bsize + this.lineWeight / 2 , this.bsize - this.lineWeight , this.bsize - this.lineWeight                                                                                                                                                                               )
+                                    .endFill();
+                this.container.addChild(rect);
+            });
+        }
         
     }
 }

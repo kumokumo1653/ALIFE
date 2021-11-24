@@ -17,13 +17,22 @@ class Header{
 
     setup(drawer){
         this.drawer = drawer;
-
+        const changeMode = () =>{
+            this.drawer.isEdit = !this.drawer.isEdit;
+            this.editButton.color = this.drawer.isEdit ? 0x00ff00 : 0xff0000;
+        };
         //playButton
         const texture = PIXI.Texture.from('Assets/UI/play.png');
         const sprite = new PIXI.Sprite(texture);
         this.playButton = new IconButton(100, 100, 0xff0000, sprite);
         this._container.addChild(this.playButton.container);
         this.playButton.down(()=>{
+            if(!this.drawer.isStarted){
+                this.drawer.setup();
+                this.drawer.isStarted = true;
+                this.drawer.isEdit = false;
+                this.editButton.color = this.drawer.isEdit ? 0x00ff00 : 0xff0000;
+            }
             drawer.start(1);
         });
 
@@ -39,10 +48,7 @@ class Header{
         this.editButton = new IconButton(100, 100, 0xff0000, PIXI.Sprite.from('Assets/UI/edit.png'));
         this.editButton.x = 500;
         this._container.addChild(this.editButton.container);
-        this.editButton.down(()=>{
-            this.drawer.isEdit = !this.drawer.isEdit;
-            this.editButton.color = this.drawer.isEdit ? 0x00ff00 : 0xff0000;
-        });
+        this.editButton.down(changeMode);
     }
 
     
