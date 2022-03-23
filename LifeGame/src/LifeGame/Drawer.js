@@ -9,6 +9,7 @@ class Drawer{
     #elapsedsecond = 0;
     isStarted = false;
     isEdit = false;
+    editMode = "write";
     #initIndividuals = [];
     //drag
     prePos;
@@ -50,7 +51,7 @@ class Drawer{
             this.prePos = {x: e.data.global.x, y: e.data.global.y};
             if(this.isEdit){
                 const cellPos = {x: Math.floor((e.data.global.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((e.data.global.y - this.container.y) / this.container.scale.y / this.bsize)};
-                this.#updateInitIndividuals(cellPos);
+                this.#updateInitIndividuals(cellPos,this.editMode);
             }
         }).bind(this);
 
@@ -67,12 +68,14 @@ class Drawer{
         const move = ((e) => {
             if(this.dragFlag){
                 if(this.isEdit){
+                    //edit
                     const preCellPos = {x: Math.floor((this.prePos.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((this.prePos.y - this.container.y) / this.container.scale.y / this.bsize)};
                     const cellPos = {x: Math.floor((e.data.global.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((e.data.global.y - this.container.y) / this.container.scale.y / this.bsize)};
                     if(preCellPos.x != cellPos.x || preCellPos.y != cellPos.y){
-                        this.#updateInitIndividuals(cellPos);
+                        this.#updateInitIndividuals(cellPos,this.editMode);
                     }
                 }else{
+                    //move container
                     const currentPos = {x: this.container.x, y: this.container.y};
                     this.container.x += (e.data.global.x - this.prePos.x);
                     this.container.y += (e.data.global.y - this.prePos.y);
@@ -125,29 +128,45 @@ class Drawer{
         }).bind(this);
     }
 
-    #updateInitIndividuals(cellPos){
-        const index = this.#initIndividuals.findIndex((el) => el.x == cellPos.x && el.y == cellPos.y);
-        if( index === -1){
-            this.#initIndividuals.push(cellPos);
-        }else{
-            this.#initIndividuals.splice(index, 1);
-        }                        
-        this.drawField();
+    #updateInitIndividuals(cellPos,mode){
+        //check field in pos
+        if(cellPos.x >= 0 && cellPos.x < this.size && cellPos.y >= 0 && cellPos.y < this.size){
+            const index = this.#initIndividuals.findIndex((el) => el.x == cellPos.x && el.y == cellPos.y);
+            if( index === -1 && mode == "write"){
+                this.#initIndividuals.push(cellPos);
+            }else if(mode == "erase"){
+                this.#initIndividuals.splice(index, 1);
+            }                        
+            this.drawField();
+        } 
     }
+
     setup(...args){
         if(args.length == 0){
+            if(this.#initIndividuals.length == 0) return;
             this.#controller.setup(this.#initIndividuals);
         } else if(args.length == 1){
             this.#controller.setup(args[0]);
         }
-        this.ticker.add(() =>{
+        this.tickerHandler = 
+            () =>{
             this.#elapsedsecond += (this.ticker.elapsedMS / 1000);
             if(1 / this.fps < this.#elapsedsecond){
                 this.#elapsedsecond = 0;
                 this.#controller.run();
                 this.drawField();
             }
-        });
+        };
+        this.ticker.add(this.tickerHandler);
+        this.isStarted = true;
+    }
+
+    reset(){
+        this.#controller.reset();
+        this.isStarted = false;
+        this.#initIndividuals = [];
+        this.ticker.remove(this.tickerHandler);
+        this.drawField();
     }
 
     start(fps = 1){

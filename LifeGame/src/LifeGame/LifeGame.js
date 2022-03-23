@@ -13,6 +13,12 @@ class LifeGame{
         });
     }
 
+    reset(){
+        this.#field = [[]];
+        this.#individuals = [];
+        
+    }
+
     get individuals(){
         return this.#individuals;
     }

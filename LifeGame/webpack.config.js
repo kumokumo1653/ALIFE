@@ -5,9 +5,8 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-    entry: path.join(__dirname, 'src/main.js'),
+    entry: path.join(__dirname, 'src/index.js'),
     output: {
-        filename: 'main.js',
         path: path.join(__dirname, 'dist'),
     },
     mode: 'production',
@@ -27,7 +26,8 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                            "@babel/preset-env"
+                            "@babel/preset-env",
+                            '@babel/preset-react'
                         ],
                     },
                     
@@ -55,6 +55,21 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            url: false,
+                            sourceMap: true,
+                        },
+                    },
+                ]
+            }
 
         ]
     },
@@ -70,7 +85,8 @@ module.exports = {
             patterns: [
                 {
                     from: 'src/Assets',
-                    to: 'Assets'
+                    to: 'Assets',
+                    noErrorOnMissing: true
                 }
             ]
         }),
