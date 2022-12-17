@@ -85,6 +85,8 @@ function Content_PIXI(props){
             }else{
                 drawer.current.isEdit = true;
                 drawer.current.editMode = props.state.status;
+                //stop game
+                drawer.current.stop();
             }
 
         }
@@ -95,7 +97,7 @@ function Content_PIXI(props){
     },[props.state, props.initialize]);
 
     return(
-        <div className="h-100 w-100" id="pixi-content"></div>
+        <div className="" id="pixi-content"></div>
     );
 }
 

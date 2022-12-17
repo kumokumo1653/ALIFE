@@ -51,7 +51,8 @@ class Drawer{
             this.prePos = {x: e.data.global.x, y: e.data.global.y};
             if(this.isEdit){
                 const cellPos = {x: Math.floor((e.data.global.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((e.data.global.y - this.container.y) / this.container.scale.y / this.bsize)};
-                this.#updateInitIndividuals(cellPos,this.editMode);
+                console.log({"isStarted:":this.isStarted, "editMode:":this.editMode,  "cellPos:": cellPos, "individuals:" : this.#initIndividuals});
+                this.#updateIndividuals(cellPos,this.editMode, this.isStarted ? this.#controller.individuals : this.#initIndividuals);
             }
         }).bind(this);
 
@@ -72,7 +73,7 @@ class Drawer{
                     const preCellPos = {x: Math.floor((this.prePos.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((this.prePos.y - this.container.y) / this.container.scale.y / this.bsize)};
                     const cellPos = {x: Math.floor((e.data.global.x - this.container.x) / this.container.scale.x / this.bsize), y: Math.floor((e.data.global.y - this.container.y) / this.container.scale.y / this.bsize)};
                     if(preCellPos.x != cellPos.x || preCellPos.y != cellPos.y){
-                        this.#updateInitIndividuals(cellPos,this.editMode);
+                        this.#updateIndividuals(cellPos,this.editMode,  this.isStarted ? this.#controller.individuals : this.#initIndividuals);
                     }
                 }else{
                     //move container
@@ -128,16 +129,16 @@ class Drawer{
         }).bind(this);
     }
 
-    #updateInitIndividuals(cellPos,mode){
+    #updateIndividuals(cellPos, mode, individuals){
         //check field in pos
         if(cellPos.x >= 0 && cellPos.x < this.size && cellPos.y >= 0 && cellPos.y < this.size){
-            const index = this.#initIndividuals.findIndex((el) => el.x == cellPos.x && el.y == cellPos.y);
+            const index = individuals.findIndex((el) => el.x == cellPos.x && el.y == cellPos.y);
             if( index === -1 && mode == "write"){
-                this.#initIndividuals.push(cellPos);
+                individuals.push(cellPos);
             }else if(mode == "erase"){
-                this.#initIndividuals.splice(index, 1);
+                individuals.splice(index, 1);
             }                        
-            this.drawField();
+            this.drawField(individuals);
         } 
     }
 
@@ -154,7 +155,7 @@ class Drawer{
             if(1 / this.fps < this.#elapsedsecond){
                 this.#elapsedsecond = 0;
                 this.#controller.run();
-                this.drawField();
+                this.drawField(this.#controller.individuals);
             }
         };
         this.ticker.add(this.tickerHandler);
@@ -166,7 +167,7 @@ class Drawer{
         this.isStarted = false;
         this.#initIndividuals = [];
         this.ticker.remove(this.tickerHandler);
-        this.drawField();
+        this.drawField(this.#initIndividuals);
     }
 
     start(fps = 1){
@@ -182,7 +183,7 @@ class Drawer{
         this.ticker.update();
     }
 
-    drawField(){
+    drawField(individuals){
         this.container.removeChildren();
         const line = new PIXI.Graphics();
         for(let i = 0; i <= this.size; i++){
@@ -190,6 +191,14 @@ class Drawer{
             line.lineStyle(this.lineWeight, this.lineColor).moveTo(0, i * this.bsize).lineTo(this.size * this.bsize, i * this.bsize);
         }
         this.container.addChild(line);
+
+        individuals.forEach(el =>{
+            const rect = new PIXI.Graphics().beginFill(this.boxColor)
+                                .drawRect(el.x * this.bsize + this.lineWeight / 2 , el.y * this.bsize + this.lineWeight / 2 , this.bsize - this.lineWeight , this.bsize - this.lineWeight                                                                                                                                                                               )
+                                .endFill();
+            this.container.addChild(rect);
+        });
+        return;
         if(this.isStarted){
             this.#controller.individuals.forEach(el =>{
                 const rect = new PIXI.Graphics().beginFill(this.boxColor)

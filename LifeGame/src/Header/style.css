@@ -6,15 +6,17 @@
     width: 100%;
     z-index: 100;
 }
-.header.fade{
-    z-index: -100;
-}
 .header-icon{
     width: 3rem;
     height: 3rem;
     color: white;
 }
-
+.icon-cursor{
+    cursor: pointer; 
+}
 .header-icon.select{
     border: solid ;
+}
+.fade{
+    opacity: 0%;
 }

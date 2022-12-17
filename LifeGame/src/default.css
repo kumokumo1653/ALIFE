@@ -1,3 +1,7 @@
-.content{
+.contentaa{
     height: 100vh;
+}
+
+canvas{
+    display: block;
 }
